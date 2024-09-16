@@ -77,6 +77,10 @@
 	}
 }
 
+.carta-wrapper {
+	padding-right: 0 !important;
+}
+
 .markdown-body {
 	@apply prose prose-invert max-w-none;
 }
