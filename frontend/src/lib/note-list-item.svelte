@@ -7,7 +7,7 @@
 >
 	<h2 class="shrink-0 truncate text-2xl">{note.title}</h2>
 	<p class="note-text my-1.5 max-h-full text-slate-300">{note.text}</p>
-	<p class="text-right text-slate-400">Edited: {note.date}</p>
+	<p class="text-nowrap text-right text-slate-400">{note.date}</p>
 </div>
 
 <style>
