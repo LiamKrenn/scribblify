@@ -1,7 +1,27 @@
-<script>
-	import MdEditor from '$lib/md-editor.svelte';
+<script lang="ts">
+	import NoteListItem from '$lib/note-list-item.svelte';
+
+	let notes: { title: string; text: string; date: string }[] = [
+		{
+			title: 'Note 1 Note 1 Note 1 Note 1 Note 1 Note 1 Note1 Note1 Note1 Note1 Note1 Note',
+			text: '# Heading\n\nThis is the content of note 1. This is the content of note 1. This is the conteote 1. This is the conteote 1. This is the conteote 1. This is the conteote 1. This is the conteote 1. This is the content of note 1.',
+			date: '2022-01-01'
+		},
+		{
+			title: 'Note 2',
+			text: '# Another Heading\n\nThis is the content of note 2. This is the content of note 1. This is the content of note 1.',
+			date: '2022-01-02'
+		},
+		{
+			title: 'Note 3',
+			text: '# Yet Another Heading\n\nThis is the content of note 3. This is the content of note 1. This is the content of note 1.',
+			date: '2022-01-03'
+		}
+	];
 </script>
 
-<div class="h-full p-[2.5%] sm:p-[5%] sm:!pt-8 lg:p-[10%]">
-	<MdEditor />
+<div class="m-8 mt-6 flex flex-wrap justify-center">
+	{#each notes as note}
+		<NoteListItem {note} />
+	{/each}
 </div>

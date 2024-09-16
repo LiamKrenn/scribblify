@@ -9,6 +9,10 @@
 	});
 
 	let value = '';
+
+	$: if (value) {
+		console.log(value);
+	}
 </script>
 
 <MarkdownEditor {carta} bind:value />
@@ -19,5 +23,4 @@
 		font-family: '...', monospace;
 		font-size: 1.1rem;
 	}
-	
 </style>
