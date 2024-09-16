@@ -20,7 +20,7 @@
 	];
 </script>
 
-<div class="mx-[5%] my-6 flex flex-wrap justify-center bg-red-500 sm:mx-[10%] xl:mx-[20%]">
+<div class="mx-[5%] my-6 flex flex-wrap justify-center sm:mx-[10%] xl:mx-[20%]">
 	{#each notes as note}
 		<NoteListItem {note} />
 	{/each}
