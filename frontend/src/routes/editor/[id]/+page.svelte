@@ -9,10 +9,11 @@
 	let socket: WebSocket;
 
 	onMount(() => {
-		socket = new WebSocket('ws://localhost:8000/note/ws/' + data.id);
+		socket = new WebSocket('ws://localhost:8000/ws/' + data.id);
 
 		socket.onopen = () => {
 			console.log('WebSocket connection opened');
+			socket.send('Hello, WebSocket!');
 		};
 
 		socket.onmessage = (event) => {
@@ -42,7 +43,7 @@
 	on:submit={() => {
 		changed_title = false; // TODO: save
 	}}
-	class="flex w-full justify-center"
+	class="absolute flex w-full justify-center"
 >
 	<input
 		on:input={() => (changed_title = true)}
@@ -60,6 +61,6 @@
 	{/if}
 </form>
 
-<div class="h-full p-[2.5%] sm:p-[5%] sm:!pt-8 lg:p-[10%]">
+<div class="h-[calc(100%-4rem)] p-[2.5%] sm:p-[5%] sm:!pt-8 lg:p-[10%]">
 	<MdEditor />
 </div>
