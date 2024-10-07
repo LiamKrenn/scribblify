@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from fastapi.middleware.cors import CORSMiddleware
-from api import note
+from api import note, security, note_access
 
 app = FastAPI()
 
@@ -18,3 +18,5 @@ app.add_middleware(
 
 # Routers
 app.include_router(note.router)
+app.include_router(security.router)
+app.include_router(note_access.router)
