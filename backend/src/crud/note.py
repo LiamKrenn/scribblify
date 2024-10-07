@@ -1,3 +1,4 @@
+from typing import List
 from api.model.note import Note, NoteSchema
 from api.model.page import Page
 
@@ -16,13 +17,19 @@ def create_note(note: Note) -> NoteSchema:
     session.add(db_note)
     session.commit()
 
-    return NoteSchema(id=db_note.id, user_id=0, **note.model_dump())
+    return NoteSchema.model_validate(db_note)
 
 
 def get_note_file(note_id: int):
     return open(DATA_DIR + str(note_id), "rw")
 
 
+def delete_note(note_id: int):
+    note = session.query(NoteDB).filter(NoteDB.id == note_id).first()
+    session.delete(note)
+    session.commit()
+
+
 def get_notes(page: Page) -> list[NoteSchema]:
-    db_notes = pageinate(session.query(NoteDB), page).all()
-    return [NoteSchema(id=note.id, user_id=0, title=note.title) for note in db_notes]
+    db_notes: List[NoteDB] = pageinate(session.query(NoteDB), page).all()
+    return [NoteSchema.model_validate(note) for note in db_notes]
