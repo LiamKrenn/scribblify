@@ -34,10 +34,11 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"bits-ui": "^0.21.16",
 		"carta-md": "^4.4.5",
 		"clsx": "^2.1.1",
 		"isomorphic-dompurify": "^2.15.0",
-		"lucide-svelte": "^0.441.0",
+		"lucide-svelte": "^0.447.0",
 		"tailwind-merge": "^2.5.2",
 		"tailwind-variants": "^0.2.1"
 	}

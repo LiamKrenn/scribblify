@@ -26,7 +26,9 @@
 		</a>
 		<NotificationPermission />
 	</div>
-	<slot></slot>
+	<div class="overflow-y-scroll">
+		<slot></slot>
+	</div>
 </div>
 
 <style>
