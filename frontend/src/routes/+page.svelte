@@ -1,14 +1,68 @@
 <script lang="ts">
 	import NoteListItem from '$lib/note-list-item.svelte';
+	import { Button, buttonVariants } from '$lib/components/ui/button';
+	import * as Dialog from '$lib/components/ui/dialog/index.js';
+	import { Input } from '$lib/components/ui/input/index.js';
+	import { Label } from '$lib/components/ui/label/index.js';
 	import { onMount } from 'svelte';
+	import { Plus } from 'lucide-svelte';
+	import { goto } from '$app/navigation';
 
-	let notes: { title: string; text: string; date: string }[] = [];
+	let notes: { title: string; text: string; date: string; id: number }[] = [];
+
+	async function getNotes() {
+		const res = await fetch('http://localhost:8000/notes?limit=999999');
+		notes = await res.json();
+	}
 
 	onMount(async () => {
-		const res = await fetch('http://localhost:8000/notes');
-		notes = await res.json();
+		await getNotes();
 	});
+
+	let title = '';
+	let open = false;
+
+	async function createNote() {
+		if (title == '') return;
+		let res = await fetch('http://localhost:8000/note', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ title: title })
+		});
+		title = '';
+		open = false;
+		await getNotes();
+		goto('/editor/' + (await res.json()).id);
+	}
 </script>
+
+<div class="mx-[20%] mt-6 flex justify-center">
+	<Dialog.Root bind:open>
+		<Dialog.Trigger
+			class="flex w-full max-w-[40rem] justify-center rounded-lg bg-slate-700 p-2 hover:scale-[1.02]"
+			>Create Note <Plus class="ml-1" /></Dialog.Trigger
+		>
+		<Dialog.Content class="sm:max-w-[425px]">
+			<Dialog.Header>
+				<Dialog.Title>Edit profile</Dialog.Title>
+				<Dialog.Description>
+					Make changes to your profile here. Click save when you're done.
+				</Dialog.Description>
+			</Dialog.Header>
+			<div class="grid gap-4 py-4">
+				<div class="grid grid-cols-4 items-center gap-4">
+					<Label for="title" class="text-right">Title</Label>
+					<Input bind:value={title} id="title" placeholder="New Note" class="col-span-3 " />
+				</div>
+			</div>
+			<Dialog.Footer>
+				<Button type="submit" on:click={() => createNote()}>Save changes</Button>
+			</Dialog.Footer>
+		</Dialog.Content>
+	</Dialog.Root>
+</div>
 
 <div class="mx-[5%] my-6 flex flex-wrap justify-center sm:mx-[10%] xl:mx-[20%]">
 	{#each notes as note}
