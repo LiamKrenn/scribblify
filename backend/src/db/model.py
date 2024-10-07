@@ -39,4 +39,23 @@ class NoteAccessDB(Base):
     note = relationship("NoteDB", back_populates="note_access")
 
 
+class NoteTagDB(Base):
+    __tablename__ = "note_tag"
+
+    note_id = Column(Integer, ForeignKey("note.id"), primary_key=True)
+    tag_id = Column(Integer, ForeignKey("tag.id"), primary_key=True)
+
+    note = relationship("NoteDB", back_populates="note_tag")
+    tag = relationship("TagDB", back_populates="note_tag")
+
+
+class TagDB(Base):
+    __tablename__ = "tag"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)
+
+    notes = relationship("NoteDB", back_populates="tag")
+
+
 Base.metadata.create_all(engine)
