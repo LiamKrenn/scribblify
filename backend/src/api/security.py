@@ -58,8 +58,6 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 
 def logged_in_user(access_token: str = Depends(oauth2_scheme)):
-    return UserSchema(username="test", email="test", id=0, is_active=True)
-
     key = jwk.get_signing_key_from_jwt(access_token).key
     print(key)
 
@@ -104,11 +102,6 @@ def logout(current_user: Annotated[UserSchema, Depends(logged_in_user)]):
 @router.post("/signup", status_code=200)
 def signup(user: User):
     return crud.user.create_user(user)
-
-
-@router.post("/signup/ms", status_code=200)
-def signup_ms():
-    pass
 
 
 @router.get("/auth-response", status_code=200)
