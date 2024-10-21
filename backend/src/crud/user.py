@@ -6,8 +6,11 @@ from db.model import UserDB
 import crud
 from crud import utils
 
+from crud.utils.hash import hash
+
 
 def create_user(user: User) -> UserSchema:
+    user.password = hash(user.password)
     db_user = UserDB(**user.model_dump())
     session.add(db_user)
     session.commit()
