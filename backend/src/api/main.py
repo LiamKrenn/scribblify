@@ -1,9 +1,14 @@
+import ssl
+
 from fastapi import FastAPI
 
 from fastapi.middleware.cors import CORSMiddleware
 from api import note, security, note_access, tag
 
 app = FastAPI()
+
+ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+ssl_context.load_cert_chain("/secrets/cert.pem", keyfile="/secrets/key.pem")
 
 origins = ["http://localhost:8003", "http://localhost:5173", "http://localhost:3000"]
 

@@ -18,6 +18,19 @@ from db.session import engine, session
 Base = declarative_base()
 
 
+class UserDB(Base):
+    __tablename__ = "user"
+
+    id = Column(Integer, primary_key=True)
+    email = Column(String, unique=True, index=True)
+    password = Column(String(256))
+    ms_oid = Column(String, default=None)
+    is_active = Column(Boolean, default=True)
+
+    notes = relationship("NoteDB", back_populates="user")
+    note_access = relationship("NoteAccessDB", back_populates="user")
+
+
 class NoteDB(Base):
     __tablename__ = "note"
 
@@ -27,16 +40,21 @@ class NoteDB(Base):
     updated_at = Column(DateTime, default=datetime.now)
 
     # owner
-    user_id = Column(Integer, default=0)
+    user_id = Column(Integer, ForeignKey("user.id"))
+    user = relationship("UserDB", back_populates="notes")
+
+    note_access = relationship("NoteAccessDB", back_populates="note")
+    tags = relationship("NoteTagDB", back_populates="note")
 
 
 class NoteAccessDB(Base):
     __tablename__ = "note_access"
 
     note_id = Column(Integer, ForeignKey("note.id"), primary_key=True)
-    user_id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("user.id"), primary_key=True)
 
     note = relationship("NoteDB", back_populates="note_access")
+    user = relationship("UserDB", back_populates="note_access")
 
 
 class NoteTagDB(Base):
@@ -45,8 +63,8 @@ class NoteTagDB(Base):
     note_id = Column(Integer, ForeignKey("note.id"), primary_key=True)
     tag_id = Column(Integer, ForeignKey("tag.id"), primary_key=True)
 
-    note = relationship("NoteDB", back_populates="note_tag")
-    tag = relationship("TagDB", back_populates="note_tag")
+    note = relationship("NoteDB", back_populates="tags")
+    tag = relationship("TagDB", back_populates="notes")
 
 
 class TagDB(Base):
@@ -55,7 +73,7 @@ class TagDB(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
 
-    notes = relationship("NoteDB", back_populates="tag")
+    notes = relationship("NoteTagDB", back_populates="tag")
 
 
 Base.metadata.create_all(engine)
