@@ -23,7 +23,7 @@ class UserDB(Base):
 
     id = Column(Integer, primary_key=True)
     email = Column(String, unique=True, index=True)
-    password = Column(String(256))
+    password = Column(String(256), default=None)
     ms_oid = Column(String, default=None)
     is_active = Column(Boolean, default=True)
 
@@ -40,7 +40,7 @@ class NoteDB(Base):
     updated_at = Column(DateTime, default=datetime.now)
 
     # owner
-    user_id = Column(Integer, ForeignKey("user.id"))
+    user_id = Column(Integer, ForeignKey("user.id"), nullable=False)
     user = relationship("UserDB", back_populates="notes")
 
     note_access = relationship("NoteAccessDB", back_populates="note")

@@ -1,8 +1,9 @@
+from typing import Optional
 from api.model.base import Base
 
 
 class User(Base):
-    password: str
+    password: Optional[str] = None
     email: str
 
 

@@ -1,6 +1,7 @@
 from typing import List
 from api.model.note import Note, NoteSchema
 from api.model.page import Page
+from api.model.user import UserSchema
 
 from db.session import session
 from db.model import NoteDB
@@ -12,8 +13,8 @@ import os
 DATA_DIR = str(os.getcwd())
 
 
-def create_note(note: Note) -> NoteSchema:
-    db_note = NoteDB(**note.model_dump())
+def create_note(note: Note, user: UserSchema) -> NoteSchema:
+    db_note = NoteDB(**note.model_dump(), user_id=user.id)
     session.add(db_note)
     session.commit()
 

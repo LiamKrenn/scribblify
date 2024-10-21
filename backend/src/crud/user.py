@@ -20,9 +20,47 @@ def create_user(user: User) -> UserSchema:
 
 def authenticate_user(email: str, password: str) -> int:
     password = hash(password)
-    user = session.query(UserDB).filter(UserDB.email == email).first()
+    user: UserDB = session.query(UserDB).filter(UserDB.email == email).first()
+
+    if user is None:
+        return None
 
     if user.password != password:
         return None
 
     return user.id
+
+
+def get_user(email: str) -> UserSchema:
+    user: UserDB = session.query(UserDB).filter(UserDB.email == email).first()
+
+    if user is None:
+        return None
+
+    return UserSchema.model_validate(user)
+
+
+def get_user_ms(oid: str) -> UserSchema:
+    user: UserDB = session.query(UserDB).filter(UserDB.ms_oid == oid).first()
+
+    if user is None:
+        return None
+
+    return UserSchema.model_validate(user)
+
+
+def login_ms(oid: str) -> UserSchema:
+    user: UserDB = session.query(UserDB).filter(UserDB.ms_oid == oid).first()
+
+    if user is None:
+        return None
+
+    return UserSchema.model_validate(user)
+
+
+def create_user_ms(user: User, oid: str) -> UserSchema:
+    db_user = UserDB(**user.model_dump(), ms_oid=oid)
+    session.add(db_user)
+    session.commit()
+
+    return UserSchema.model_validate(db_user)

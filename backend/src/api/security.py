@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta, timezone
 import os
 from typing import Annotated, List
 from fastapi import (
@@ -11,7 +12,7 @@ from fastapi import (
 )
 
 
-import jwt
+from jose import JWTError
 from msal import ConfidentialClientApplication
 from msal.oauth2cli.oidc import decode_id_token
 from msal.authority import (
@@ -26,9 +27,11 @@ from fastapi.security import OAuth2PasswordBearer
 from jwt import PyJWKClient
 
 from api.model.user import User, UserSchema
+from api.model.token import Token
 
 from expiring_dict import ExpiringDict
 
+from api.utils.security import logged_in_user, create_access_token
 import crud
 from crud import user
 import crud.user
@@ -54,23 +57,6 @@ jwk = PyJWKClient(
 
 oauth_cache = ExpiringDict(60)  # Keys will exist for 60 seconds
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
-
-
-def logged_in_user(access_token: str = Depends(oauth2_scheme)):
-    key = jwk.get_signing_key_from_jwt(access_token).key
-    print(key)
-
-    decoded_token = jwt.decode(
-        access_token,
-        key,
-        algorithms=["RS256"],
-        audience=MS_APP_ID,
-        issuer=f"https://login.microsoftonline.com/{MS_AUTHORITY_ID}/v2.0",
-    )
-
-    print(decoded_token)
-
 
 @router.get("/login/oauth/ms")
 def login():
@@ -85,8 +71,33 @@ def login(form: Annotated[OAuth2PasswordRequestForm, Depends()]):
     result = app.acquire_token_by_username_password(
         form.username, form.password, ["User.Read"]
     )
+    if result.get("error") is not None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
 
-    return result["access_token"]
+    user = crud.user.get_user_ms(result["id_token_claims"]["oid"])
+    if user is None:
+        user = crud.user.create_user_ms(
+            User(email=result["id_token_claims"]["preferred_username"]),
+            result["id_token_claims"]["oid"],
+        )
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    access_token = create_access_token(
+        data={"sub": user.email}
+    )
+    print(access_token)
+
+    return Token(access_token=access_token, token_type="bearer")
 
 
 @router.post("/login", status_code=200)
