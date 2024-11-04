@@ -5,6 +5,7 @@ from fastapi import (
     Depends,
     HTTPException,
     Request,
+    Response,
     status,
     APIRouter,
     WebSocket,
@@ -92,17 +93,18 @@ def login(form: Annotated[OAuth2PasswordRequestForm, Depends()]):
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    access_token = create_access_token(
-        data={"sub": user.email}
-    )
-    print(access_token)
-
-    return Token(access_token=access_token, token_type="bearer")
-
 
 @router.post("/login", status_code=200)
 def login(form: Annotated[OAuth2PasswordRequestForm, Depends()]):
-    return crud.user.authenticate_user(form.username, form.password)
+    user = crud.user.authenticate_user(form.username, form.password)
+    token = create_access_token(data={"sub": user.email})
+
+    response = RedirectResponse(
+        url="http://localhost:5173", status_code=status.HTTP_200_OK
+    )
+    response.set_cookie("access_token", value=f"{token}", httponly=True, secure=True)
+
+    return response
 
 
 @router.post("/logout", status_code=200)
@@ -122,4 +124,12 @@ def oauth_redirect(request: Request):
     auth_code_flow = oauth_cache.pop(query["state"])
     result = app.acquire_token_by_auth_code_flow(auth_code_flow, query)
 
-    return result["access_token"]
+    user = crud.user.get_user_ms(result["id_token_claims"]["oid"])
+
+    token = create_access_token(data={"sub": user.email})
+    response = RedirectResponse(
+        url="http://localhost:5173", status_code=status.HTTP_200_OK
+    )
+    response.set_cookie("access_token", value=f"{token}", httponly=True, secure=True)
+
+    return response
