@@ -18,7 +18,7 @@ def create_user(user: User) -> UserSchema:
     return db_user.id
 
 
-def authenticate_user(email: str, password: str) -> int:
+def authenticate_user(email: str, password: str) -> UserSchema:
     password = hash(password)
     user: UserDB = session.query(UserDB).filter(UserDB.email == email).first()
 
@@ -28,7 +28,7 @@ def authenticate_user(email: str, password: str) -> int:
     if user.password != password:
         return None
 
-    return user.id
+    return UserSchema.model_validate(user)
 
 
 def get_user(email: str) -> UserSchema:

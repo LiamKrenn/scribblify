@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta, timezone
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, Request
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import status
 from jose import JWTError
@@ -32,16 +32,16 @@ def create_access_token(
     return encoded_jwt
 
 
-def logged_in_user(access_token: str = Depends(oauth2_scheme)):
-    from db.session import session
-    from db.model import UserDB
-    return UserSchema.model_validate(session.query(UserDB).one())
-
+def logged_in_user(request: Request) -> UserSchema:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
+        detail="Unauthorized",
         headers={"WWW-Authenticate": "Bearer"},
     )
+
+    access_token = request.cookies.get("access_token")
+    if access_token == None:
+        raise credentials_exception
 
     try:
         payload = jwt.decode(access_token, SECRET_KEY, algorithms=[ALGORITHM])

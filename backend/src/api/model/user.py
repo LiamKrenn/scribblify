@@ -8,6 +8,6 @@ class User(Base):
 
 
 class UserSchema(User):
-    ms_oid: str
+    ms_oid: str | None
     is_active: bool
     id: int
