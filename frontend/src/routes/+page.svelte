@@ -11,7 +11,7 @@
 	let notes: { title: string; text: string; date: string; id: number }[] = [];
 
 	async function getNotes() {
-		const res = await fetch('http://localhost:8000/notes?limit=999999');
+		const res = await fetch('https://localhost:8000/notes?limit=999999');
 		notes = await res.json();
 	}
 
@@ -24,7 +24,7 @@
 
 	async function createNote() {
 		if (title == '') return;
-		let res = await fetch('http://localhost:8000/note', {
+		let res = await fetch('https://localhost:8000/note', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -46,10 +46,7 @@
 		>
 		<Dialog.Content class="sm:max-w-[425px]">
 			<Dialog.Header>
-				<Dialog.Title>Edit profile</Dialog.Title>
-				<Dialog.Description>
-					Make changes to your profile here. Click save when you're done.
-				</Dialog.Description>
+				<Dialog.Title>Create Note</Dialog.Title>
 			</Dialog.Header>
 			<div class="grid gap-4 py-4">
 				<div class="grid grid-cols-4 items-center gap-4">
@@ -58,7 +55,7 @@
 				</div>
 			</div>
 			<Dialog.Footer>
-				<Button type="submit" on:click={() => createNote()}>Save changes</Button>
+				<Button type="submit" on:click={createNote}>Create</Button>
 			</Dialog.Footer>
 		</Dialog.Content>
 	</Dialog.Root>
