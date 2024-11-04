@@ -33,6 +33,10 @@ def create_access_token(
 
 
 def logged_in_user(access_token: str = Depends(oauth2_scheme)):
+    from db.session import session
+    from db.model import UserDB
+    return UserSchema.model_validate(session.query(UserDB).one())
+
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",

@@ -31,6 +31,8 @@ def delete_note(note_id: int):
     session.commit()
 
 
-def get_notes(page: Page) -> list[NoteSchema]:
-    db_notes: List[NoteDB] = pageinate(session.query(NoteDB), page).all()
+def get_notes(page: Page, user: UserSchema) -> list[NoteSchema]:
+    db_notes: List[NoteDB] = pageinate(
+        session.query(NoteDB).filter(NoteDB.user_id == user.id), page
+    ).all()
     return [NoteSchema.model_validate(note) for note in db_notes]
