@@ -110,7 +110,7 @@ def login(form: Annotated[OAuth2PasswordRequestForm, Depends()]):
     response = RedirectResponse(
         url="https://localhost:5173", status_code=status.HTTP_200_OK
     )
-    response.set_cookie("access_token", value=f"{token}", httponly=True, secure=True)
+    response.set_cookie("access_token", value=f"{token}", httponly=True, secure=True, samesite="lax")
 
     return response
 
