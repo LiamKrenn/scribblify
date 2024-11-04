@@ -93,6 +93,14 @@ def login(form: Annotated[OAuth2PasswordRequestForm, Depends()]):
             headers={"WWW-Authenticate": "Bearer"},
         )
 
+    token = create_access_token(data={"sub": user.email})
+    response = RedirectResponse(
+        url="http://localhost:5173", status_code=status.HTTP_200_OK
+    )
+    response.set_cookie("access_token", value=f"{token}", httponly=True, secure=True)
+
+    return response
+
 
 @router.post("/login", status_code=200)
 def login(form: Annotated[OAuth2PasswordRequestForm, Depends()]):
