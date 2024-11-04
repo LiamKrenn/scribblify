@@ -95,7 +95,7 @@ def login(form: Annotated[OAuth2PasswordRequestForm, Depends()]):
 
     token = create_access_token(data={"sub": user.email})
     response = RedirectResponse(
-        url="http://localhost:5173", status_code=status.HTTP_200_OK
+        url="https://localhost:5173", status_code=status.HTTP_200_OK
     )
     response.set_cookie("access_token", value=f"{token}", httponly=True, secure=True)
 
@@ -108,7 +108,7 @@ def login(form: Annotated[OAuth2PasswordRequestForm, Depends()]):
     token = create_access_token(data={"sub": user.email})
 
     response = RedirectResponse(
-        url="http://localhost:5173", status_code=status.HTTP_200_OK
+        url="https://localhost:5173", status_code=status.HTTP_200_OK
     )
     response.set_cookie("access_token", value=f"{token}", httponly=True, secure=True)
 
@@ -136,7 +136,7 @@ def oauth_redirect(request: Request):
 
     token = create_access_token(data={"sub": user.email})
     response = RedirectResponse(
-        url="http://localhost:5173", status_code=status.HTTP_200_OK
+        url="https://localhost:5173", status_code=status.HTTP_200_OK
     )
     response.set_cookie("access_token", value=f"{token}", httponly=True, secure=True)
 
