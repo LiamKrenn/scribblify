@@ -18,7 +18,7 @@ services:
       - ./backend/src:/usr/src/
       - ./secrets:/secrets
     ports:
-      - 8000:8000
+      - 8002:8000
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB}
       - MS_APP_ID=${MS_APP_ID}

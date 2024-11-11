@@ -97,7 +97,9 @@ def login(form: Annotated[OAuth2PasswordRequestForm, Depends()]):
     response = RedirectResponse(
         url="https://localhost:5173", status_code=status.HTTP_200_OK
     )
-    response.set_cookie("access_token", value=f"{token}", httponly=True, secure=True)
+    response.set_cookie(
+        "access_token", value=f"{token}", httponly=True, secure=True, samesite="none"
+    )
 
     return response
 
@@ -110,7 +112,9 @@ def login(form: Annotated[OAuth2PasswordRequestForm, Depends()]):
     response = RedirectResponse(
         url="https://localhost:5173", status_code=status.HTTP_200_OK
     )
-    response.set_cookie("access_token", value=f"{token}", httponly=True, secure=True, samesite="none")
+    response.set_cookie(
+        "access_token", value=f"{token}", httponly=True, secure=True, samesite="none"
+    )
 
     return response
 
@@ -125,7 +129,7 @@ def signup(user: User):
     return crud.user.create_user(user)
 
 
-@router.get("/auth-response", status_code=200)
+@router.get("/oauth2-redirect", status_code=200)
 def oauth_redirect(request: Request):
     query = dict(request.query_params)
 
@@ -135,9 +139,12 @@ def oauth_redirect(request: Request):
     user = crud.user.get_user_ms(result["id_token_claims"]["oid"])
 
     token = create_access_token(data={"sub": user.email})
+
     response = RedirectResponse(
-        url="https://localhost:5173", status_code=status.HTTP_200_OK
+        url="http://localhost:5173", status_code=status.HTTP_200_OK
     )
-    response.set_cookie("access_token", value=f"{token}", httponly=True, secure=True)
+    response.set_cookie(
+        "access_token", value=f"{token}", httponly=True, secure=True, samesite="none"
+    )
 
     return response
