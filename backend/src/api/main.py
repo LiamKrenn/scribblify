@@ -3,7 +3,7 @@ import ssl
 from fastapi import FastAPI
 
 from fastapi.middleware.cors import CORSMiddleware
-from api import note, security, note_access, tag
+from api import note, security, note_access, tag, user
 
 app = FastAPI()
 
@@ -26,3 +26,4 @@ app.include_router(note.router)
 app.include_router(security.router)
 app.include_router(note_access.router)
 app.include_router(tag.router)
+app.include_router(user.router)
