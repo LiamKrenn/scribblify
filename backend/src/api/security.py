@@ -137,6 +137,11 @@ def oauth_redirect(request: Request):
     result = app.acquire_token_by_auth_code_flow(auth_code_flow, query)
 
     user = crud.user.get_user_ms(result["id_token_claims"]["oid"])
+    if user is None:
+        user = crud.user.create_user_ms(
+            User(email=result["id_token_claims"]["preferred_username"]),
+            result["id_token_claims"]["oid"],
+        )
 
     token = create_access_token(data={"sub": user.email})
 
