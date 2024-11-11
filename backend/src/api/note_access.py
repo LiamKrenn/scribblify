@@ -10,6 +10,7 @@ from fastapi import (
 from api.model.note_access import NoteAccess
 from api.model.page import Page
 
+from api.model.user import UserPublic
 import crud.note_access
 
 
@@ -21,7 +22,7 @@ async def add_note_access(note_access: NoteAccess):
     crud.note_access.add_note_access(note_access)
 
 
-@router.get("/{note_id}", response_model=List[NoteAccess])
+@router.get("/{note_id}", response_model=List[UserPublic])
 async def get_note_access(note_id: int):
     return crud.note_access.get_note_access(note_id)
 
