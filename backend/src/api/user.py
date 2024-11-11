@@ -30,9 +30,15 @@ async def get_me(user: UserSchema = Depends(logged_in_user)):
 
 @router.get("", response_model=UserPublic)
 async def get_user(email: str, user: UserSchema = Depends(logged_in_user)):
-    return crud.user.get_user(email)
+    user = crud.user.get_user(email)
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
 
 
 @router.get("/{user_id}", response_model=UserPublic)
 async def get_user(user_id: int):
-    return crud.user.get_user(user_id)
+    user = crud.user.get_user(user_id)
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
