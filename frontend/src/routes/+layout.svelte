@@ -30,10 +30,12 @@
 		<div class="flex">
 			<NotificationPermission />
 			{#if data.loggedIn}
-				Logged In
+				<div class="ml-2 flex h-12 items-center justify-center rounded-lg bg-slate-700 px-4">
+					Logged In
+				</div>
 			{:else}
 				<a
-					href="https://localhost:8000/login/oauth/ms"
+					href="https://localhost:8002/login/oauth/ms"
 					class="ml-2 flex h-12 items-center justify-center rounded-lg bg-sky-700 px-4"
 					>Log In <LogIn class="ml-1.5" />
 				</a>

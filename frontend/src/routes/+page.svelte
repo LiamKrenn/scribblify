@@ -11,7 +11,9 @@
 	let notes: { title: string; text: string; date: string; id: number }[] = [];
 
 	async function getNotes() {
-		const res = await fetch('https://localhost:8000/notes?limit=999999', {credentials: 'include'});
+		const res = await fetch('https://localhost:8002/notes?limit=999999', {
+			credentials: 'include'
+		});
 		notes = await res.json();
 	}
 
@@ -24,7 +26,7 @@
 
 	async function createNote() {
 		if (title == '') return;
-		let res = await fetch('https://localhost:8000/note', {
+		let res = await fetch('https://localhost:8002/note', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'

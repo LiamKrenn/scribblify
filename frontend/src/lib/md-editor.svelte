@@ -3,16 +3,12 @@
 	import 'carta-md/default.css'; /* Default theme */
 	import DOMPurify from 'isomorphic-dompurify';
 
+	export let value = '';
+
 	const carta = new Carta({
 		sanitizer: DOMPurify.sanitize,
 		theme: 'github-dark'
 	});
-
-	let value = '';
-
-	$: if (value) {
-		console.log(value);
-	}
 </script>
 
 <MarkdownEditor {carta} bind:value />
