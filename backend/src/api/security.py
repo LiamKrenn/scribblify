@@ -27,7 +27,7 @@ from fastapi.security import OAuth2PasswordBearer
 
 from jwt import PyJWKClient
 
-from api.model.user import User, UserSchema
+from api.model.user import User, UserPublic, UserSchema
 from api.model.token import Token
 
 from expiring_dict import ExpiringDict
@@ -125,7 +125,7 @@ def logout(current_user: Annotated[UserSchema, Depends(logged_in_user)]):
 
 
 @router.post("/signup", status_code=200)
-def signup(user: User):
+def signup(user: UserPublic):
     return crud.user.create_user(user)
 
 

@@ -4,9 +4,6 @@ from api.model.user import User, UserSchema
 from db.session import session
 from db.model import UserDB
 
-import crud
-from crud import utils
-
 from crud.utils.hash import hash
 from crud.utils.page import pageinate
 
