@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta, timezone
-from fastapi import Depends, HTTPException, Request
+from typing import Union
+from fastapi import Depends, HTTPException, Request, WebSocket, WebSocketException
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import status
 from jose import JWTError
@@ -32,6 +33,18 @@ def create_access_token(
     return encoded_jwt
 
 
+def get_current_user(access_token: str) -> UserSchema:
+    try:
+        payload = jwt.decode(access_token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+
+        user: UserSchema = crud.user.get_user(email)
+    except Exception:
+        return None
+
+    return user
+
+
 def logged_in_user(request: Request) -> UserSchema:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -43,17 +56,24 @@ def logged_in_user(request: Request) -> UserSchema:
     if access_token == None:
         raise credentials_exception
 
-    try:
-        payload = jwt.decode(access_token, SECRET_KEY, algorithms=[ALGORITHM])
-        email: str = payload.get("sub")
-        if email is None:
-            raise credentials_exception
+    user = get_current_user(access_token)
 
-        user: UserSchema = crud.user.get_user(email)
-        if user is None:
-            raise credentials_exception
+    if user is None:
+        raise credentials_exception
 
-    except JWTError:
+    return user
+
+
+def ws_logged_in_user(ws: WebSocket) -> UserSchema:
+    credentials_exception = WebSocketException(code=status.WS_1001_GOING_AWAY)
+
+    access_token = ws.cookies.get("access_token")
+    if access_token == None:
+        raise credentials_exception
+
+    user = get_current_user(access_token)
+
+    if user is None:
         raise credentials_exception
 
     return user
