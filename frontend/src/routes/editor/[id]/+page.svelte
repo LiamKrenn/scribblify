@@ -59,18 +59,22 @@
 
 	async function addUser() {
 		adderror = '';
-		const res_user = await fetch('http://localhost:8002/user?email=' + addemail);
+		const res_user = await fetch(
+			'https://localhost:8002/user?email=' + addemail.replace('@', '%40'),
+			{ credentials: 'include' }
+		);
 		if (res_user.status !== 200) {
 			adderror = 'User not found';
 			return;
 		}
 		const json_user = await res_user.json();
 
-		const res = await fetch('http://localhost:8002/note_access/' + data.id, {
+		const res = await fetch('https://localhost:8002/note_access/', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
+			credentials: 'include',
 			body: JSON.stringify({
 				note_id: data.id,
 				user_id: json_user.id
@@ -84,7 +88,9 @@
 	let useraccess: any[] = [];
 
 	async function getAllUsers() {
-		const res = await fetch('http://localhost:8002/note_access/' + data.id);
+		const res = await fetch('https://localhost:8002/note_access/' + data.id, {
+			credentials: 'include'
+		});
 		const json = await res.json();
 		useraccess = json;
 	}
@@ -138,9 +144,13 @@
 						}}>Add</Button
 					>
 				</div>
-
-				<Label for="email" class="text-right">User that already have access</Label>
-				{#each useraccess as user}{/each}
+				<p class="mb-2 text-red-400">{adderror}</p>
+				{#if useraccess.length != 0}
+					<Label for="email" class="text-right">User that already have access</Label>
+					{#each useraccess as user}
+						{user}
+					{/each}
+				{/if}
 			</div>
 		</Dialog.Content>
 	</Dialog.Root>
