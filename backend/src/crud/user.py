@@ -7,12 +7,17 @@ from db.model import UserDB
 from crud.utils.hash import hash
 from crud.utils.page import pageinate
 
+from sqlalchemy.exc import IntegrityError
+
 
 def create_user(user: User) -> UserSchema:
     user.password = hash(user.password)
-    db_user = UserDB(**user.model_dump())
-    session.add(db_user)
-    session.commit()
+    try:
+        db_user = UserDB(**user.model_dump())
+        session.add(db_user)
+        session.commit()
+    except IntegrityError as e:
+        raise ValueError("User email already exists")
 
     return db_user.id
 

@@ -22,7 +22,7 @@ def create_note(note: Note, user: UserSchema) -> NoteSchema:
 
 
 def get_note_file(note_id: int):
-    return open(DATA_DIR + str(note_id), "rw")
+    return open(DATA_DIR + str(note_id), "r+")
 
 
 def delete_note(note_id: int):

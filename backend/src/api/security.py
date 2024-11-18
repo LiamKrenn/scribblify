@@ -126,7 +126,10 @@ def logout(current_user: Annotated[UserSchema, Depends(logged_in_user)]):
 
 @router.post("/signup", status_code=200)
 def signup(user: UserPost):
-    return crud.user.create_user(user)
+    try:
+        return crud.user.create_user(user)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 
 @router.get("/oauth2-redirect", status_code=200)
@@ -146,7 +149,7 @@ def oauth_redirect(request: Request):
     token = create_access_token(data={"sub": user.email})
 
     response = RedirectResponse(
-        url="http://localhost:5173", status_code=status.HTTP_200_OK
+        url="http://localhost:5173", status_code=status.HTTP_302_FOUND
     )
     response.set_cookie(
         "access_token", value=f"{token}", httponly=True, secure=True, samesite="none"
