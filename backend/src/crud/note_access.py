@@ -13,8 +13,14 @@ def add_note_access(note_access: NoteAccess):
     session.commit()
 
 
-def get_note_access(note_id: int) -> List[UserPublic]:
-    db = session.query(NoteAccessDB).join(UserDB).filter(NoteAccessDB.note_id == note_id).all()
+def get_note_access(note_id: int, user: UserPublic) -> List[UserPublic]:
+    db = (
+        session.query(NoteAccessDB)
+        .join(UserDB)
+        .filter(NoteAccessDB.note_id == note_id)
+        .filter(UserDB.id == user.id)
+        .all()
+    )
     return [UserPublic.model_validate(note) for note in db]
 
 

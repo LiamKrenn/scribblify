@@ -52,7 +52,10 @@ async def note_ws(
     await socket.accept()
     file = crud.note.get_note_file(note_id)
     file.seek(0)
-    print(file.read())
+
+    content = file.read()
+    await socket.send_text(content)
+    print(content)
 
     while True:
         """
@@ -71,6 +74,8 @@ async def note_ws(
         content = await socket.receive_text()
         file.seek(0)
         file.write(content)
+
+        await socket.send_text(content)
 
 
 @router.get("/notes", response_model=List[NoteSchema])
