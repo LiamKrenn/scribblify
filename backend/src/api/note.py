@@ -55,6 +55,7 @@ async def note_ws(
     print(file.read())
 
     while True:
+        """
         try:
             command = NoteCommand.model_validate_json(await socket.receive_text())
         except ValueError:
@@ -65,6 +66,11 @@ async def note_ws(
         print(command.char)
 
         await socket.send_text(command.model_dump_json())
+        """
+
+        content = await socket.receive_text()
+        file.seek(0)
+        file.write(content)
 
 
 @router.get("/notes", response_model=List[NoteSchema])
