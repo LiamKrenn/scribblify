@@ -8,8 +8,10 @@ from crud.utils.hash import hash
 from crud.utils.page import pageinate
 
 from sqlalchemy.exc import IntegrityError
+from crud.utils.rollback import crud_exception_handle
 
 
+@crud_exception_handle
 def create_user(user: User) -> UserSchema:
     user.password = hash(user.password)
     try:
@@ -22,6 +24,7 @@ def create_user(user: User) -> UserSchema:
     return db_user.id
 
 
+@crud_exception_handle
 def authenticate_user(email: str, password: str) -> UserSchema:
     password = hash(password)
     user: UserDB = session.query(UserDB).filter(UserDB.email == email).first()
@@ -35,6 +38,7 @@ def authenticate_user(email: str, password: str) -> UserSchema:
     return UserSchema.model_validate(user)
 
 
+@crud_exception_handle
 def get_user(email: str) -> UserSchema:
     user: UserDB = session.query(UserDB).filter(UserDB.email == email).first()
 
@@ -44,6 +48,7 @@ def get_user(email: str) -> UserSchema:
     return UserSchema.model_validate(user)
 
 
+@crud_exception_handle
 def get_user_ms(oid: str) -> UserSchema:
     user: UserDB = session.query(UserDB).filter(UserDB.ms_oid == oid).first()
 
@@ -53,6 +58,7 @@ def get_user_ms(oid: str) -> UserSchema:
     return UserSchema.model_validate(user)
 
 
+@crud_exception_handle
 def login_ms(oid: str) -> UserSchema:
     user: UserDB = session.query(UserDB).filter(UserDB.ms_oid == oid).first()
 
@@ -62,6 +68,7 @@ def login_ms(oid: str) -> UserSchema:
     return UserSchema.model_validate(user)
 
 
+@crud_exception_handle
 def create_user_ms(user: User, oid: str) -> UserSchema:
     db_user = UserDB(**user.model_dump(), ms_oid=oid)
     session.add(db_user)
@@ -70,6 +77,7 @@ def create_user_ms(user: User, oid: str) -> UserSchema:
     return UserSchema.model_validate(db_user)
 
 
+@crud_exception_handle
 def get_users(page: dict) -> List[UserSchema]:
     users = pageinate(session.query(UserDB), page).all()
     return [UserSchema.model_validate(user) for user in users]

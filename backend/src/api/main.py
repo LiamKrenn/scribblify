@@ -17,7 +17,7 @@ if FRONTEND_URL:
     origins.append(FRONTEND_URL)
 else:
     raise ValueError("FRONTEND_URL environment variable not set")
-print(origins)
+
 
 app.add_middleware(
     CORSMiddleware,

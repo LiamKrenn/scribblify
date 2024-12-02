@@ -1,9 +1,11 @@
+from crud.utils.rollback import crud_exception_handle
 from db.model import NoteDB, NoteTagDB, TagDB
 from db.session import session
 
 from api.model.tag import Tag, TagSchema
 
 
+@crud_exception_handle
 def add_note_tag(tag_id: int, note_id: int):
     notedb = session.query(NoteDB).filter(NoteDB.id == note_id).first()
     if notedb is None:
@@ -18,6 +20,7 @@ def add_note_tag(tag_id: int, note_id: int):
     session.commit()
 
 
+@crud_exception_handle
 def delete_note_tag(tag_id: int, note_id: int):
     note_tag = (
         session.query(NoteTagDB)
