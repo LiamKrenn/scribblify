@@ -18,7 +18,7 @@
 	let block = false;
 
 	onMount(() => {
-		// getAllUsers();
+		getAllUsers();
 		value = '';
 
 		socket = new WebSocket(PUBLIC_WSS_URL + data.id);
