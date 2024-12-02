@@ -11,11 +11,18 @@
 
 	let notes: { title: string; text: string; date: string; id: number }[] = [];
 
+	let shared_notes: { title: string; text: string; date: string; id: number }[] = [];
+
 	async function getNotes() {
 		const res = await fetch(`${PUBLIC_BACKEND_URL}/notes?limit=999999`, {
 			credentials: 'include'
 		});
 		notes = await res.json();
+
+		const res2 = await fetch(`${PUBLIC_BACKEND_URL}/notes/shared?limit=999999`, {
+			credentials: 'include'
+		});
+		shared_notes = await res2.json();
 	}
 
 	onMount(async () => {
@@ -67,6 +74,14 @@
 
 <div class="mx-[5%] my-6 flex flex-wrap justify-center sm:mx-[10%] xl:mx-[20%]">
 	{#each notes as note}
+		<NoteListItem {note} />
+	{/each}
+</div>
+
+<p class="mx-[5%] sm:mx-[10%] xl:mx-[20%]">Shared with you</p>
+
+<div class="mx-[5%] my-6 flex flex-wrap justify-center sm:mx-[10%] xl:mx-[20%]">
+	{#each shared_notes as note}
 		<NoteListItem {note} />
 	{/each}
 </div>
