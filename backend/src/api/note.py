@@ -20,7 +20,9 @@ import crud.note
 from crud.utils.exceptions import UnauthorizedException
 
 from api.utils.security import logged_in_user, ws_logged_in_user
+from api.utils.ws import ConnectionManager
 
+SOCKET_MANAGER = ConnectionManager()
 
 router = APIRouter(tags=["Note"])
 
@@ -49,12 +51,12 @@ async def note_ws(
     note_id: int,
     user: UserSchema = Depends(ws_logged_in_user),
 ):
-    await socket.accept()
+    await SOCKET_MANAGER.connect(socket)
     file = crud.note.get_note_file(note_id)
     file.seek(0)
 
     content = file.read()
-    await socket.send_text(content)
+    await SOCKET_MANAGER.send(content, socket)
     print(content)
 
     while True:
@@ -75,7 +77,7 @@ async def note_ws(
         file.seek(0)
         file.write(content)
 
-        await socket.send_text(content)
+        await SOCKET_MANAGER.broadcast(content)
 
 
 @router.get("/notes", response_model=List[NoteSchema])
