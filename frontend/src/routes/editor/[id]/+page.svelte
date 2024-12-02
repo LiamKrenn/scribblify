@@ -7,7 +7,7 @@
 	import { Label } from '$lib/components/ui/label/index.js';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { Button, buttonVariants } from '$lib/components/ui/button';
-	import { PUBLIC_BACKEND_URL } from '$env/static/public';
+	import { PUBLIC_BACKEND_URL, PUBLIC_WSS_URL } from '$env/static/public';
 
 	export let data: PageData;
 
@@ -21,7 +21,7 @@
 		// getAllUsers();
 		value = '';
 
-		socket = new WebSocket('wss://localhost:8002/ws/' + data.id);
+		socket = new WebSocket(PUBLIC_WSS_URL + data.id);
 
 		socket.onopen = () => {
 			console.log('WebSocket connection opened');
