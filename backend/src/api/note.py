@@ -88,6 +88,14 @@ async def get_notes(
     return crud.note.get_notes(page, user)
 
 
+@router.get("/notes/shared", response_model=List[NoteSchema])
+async def get_notes_shared(
+    page: Annotated[dict, Page] = Depends(Page),
+    user: UserSchema = Depends(logged_in_user),
+):
+    return crud.note.get_notes_shared(page, user)
+
+
 @router.delete("/note/{note_id}", status_code=204)
 async def delete_note(note_id: int):
     crud.note.delete_note(note_id)

@@ -4,7 +4,7 @@ from api.model.page import Page
 from api.model.user import UserSchema
 
 from db.session import session
-from db.model import NoteDB
+from db.model import NoteAccessDB, NoteDB
 
 from crud.utils.page import pageinate
 from crud.utils.exceptions import UnauthorizedException
@@ -59,5 +59,16 @@ def delete_note(note_id: int):
 def get_notes(page: Page, user: UserSchema) -> list[NoteSchema]:
     db_notes: List[NoteDB] = pageinate(
         session.query(NoteDB).filter(NoteDB.user_id == user.id), page
+    ).all()
+    return [NoteSchema.model_validate(note) for note in db_notes]
+
+
+@crud_exception_handle
+def get_notes_shared(page: Page, user: UserSchema) -> list[NoteSchema]:
+    db_notes: List[NoteDB] = pageinate(
+        session.query(NoteDB)
+        .join(NoteAccessDB)
+        .filter(NoteAccessDB.user_id == user.id),
+        page,
     ).all()
     return [NoteSchema.model_validate(note) for note in db_notes]
