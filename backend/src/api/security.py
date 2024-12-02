@@ -40,6 +40,8 @@ import crud.user
 
 router = APIRouter(tags=["Security"])
 
+FRONTEND_URL = os.getenv("FRONTEND_URL")
+
 MS_APP_ID = os.getenv("MS_APP_ID")
 # tenant id
 MS_AUTHORITY_ID = os.getenv("MS_AUTHORITY_ID")
@@ -148,9 +150,7 @@ def oauth_redirect(request: Request):
 
     token = create_access_token(data={"sub": user.email})
 
-    response = RedirectResponse(
-        url="http://localhost:5173", status_code=status.HTTP_302_FOUND
-    )
+    response = RedirectResponse(url=FRONTEND_URL, status_code=status.HTTP_302_FOUND)
     response.set_cookie(
         "access_token", value=f"{token}", httponly=True, secure=True, samesite="none"
     )

@@ -1,3 +1,4 @@
+import os
 import ssl
 
 from fastapi import FastAPI
@@ -10,7 +11,13 @@ app = FastAPI()
 ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
 ssl_context.load_cert_chain("/secrets/cert.pem", keyfile="/secrets/key.pem")
 
-origins = ["http://localhost:8003", "http://localhost:5173", "http://localhost:3000"]
+origins = []
+FRONTEND_URL = os.getenv("FRONTEND_URL")
+if FRONTEND_URL:
+    origins.append(FRONTEND_URL)
+else:
+    raise ValueError("FRONTEND_URL environment variable not set")
+print(origins)
 
 app.add_middleware(
     CORSMiddleware,
