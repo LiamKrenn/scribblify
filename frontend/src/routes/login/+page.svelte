@@ -1,10 +1,12 @@
 <script lang="ts">
+	import { PUBLIC_BACKEND_URL } from '$env/static/public';
+
 	let username = '';
 	let password = '';
 
 	async function login() {
 		console.log('login');
-		const res = await fetch('https://localhost:8002/login', {
+		const res = await fetch(`${PUBLIC_BACKEND_URL}/login`, {
 			credentials: 'include',
 			method: 'POST',
 			headers: {
@@ -19,7 +21,7 @@
 
 	async function register() {
 		console.log('register');
-		const res = await fetch('https://localhost:8002/signup', {
+		const res = await fetch(`${PUBLIC_BACKEND_URL}/signup`, {
 			credentials: 'include',
 			method: 'POST',
 			headers: {

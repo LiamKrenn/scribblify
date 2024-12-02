@@ -7,11 +7,12 @@
 	import { onMount } from 'svelte';
 	import { Plus } from 'lucide-svelte';
 	import { goto } from '$app/navigation';
+	import { PUBLIC_BACKEND_URL } from '$env/static/public';
 
 	let notes: { title: string; text: string; date: string; id: number }[] = [];
 
 	async function getNotes() {
-		const res = await fetch('https://localhost:8002/notes?limit=999999', {
+		const res = await fetch(`${PUBLIC_BACKEND_URL}/notes?limit=999999`, {
 			credentials: 'include'
 		});
 		notes = await res.json();
@@ -26,7 +27,7 @@
 
 	async function createNote() {
 		if (title == '') return;
-		let res = await fetch('https://localhost:8002/note', {
+		let res = await fetch(`${PUBLIC_BACKEND_URL}/note`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'

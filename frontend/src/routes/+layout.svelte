@@ -4,6 +4,7 @@
 	import { onMount } from 'svelte';
 	import NotificationPermission from '$lib/NotificationPermission.svelte';
 	import type { PageData } from './$types';
+	import { PUBLIC_BACKEND_URL } from '$env/static/public';
 
 	export let data: PageData;
 
@@ -35,7 +36,7 @@
 				</div>
 			{:else}
 				<a
-					href="https://localhost:8002/login/oauth/ms"
+					href="{PUBLIC_BACKEND_URL}/login/oauth/ms"
 					class="ml-2 flex h-12 items-center justify-center rounded-lg bg-sky-700 px-4"
 					>Log In <LogIn class="ml-1.5" />
 				</a>

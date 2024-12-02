@@ -7,6 +7,7 @@
 	import { Label } from '$lib/components/ui/label/index.js';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { Button, buttonVariants } from '$lib/components/ui/button';
+	import { PUBLIC_BACKEND_URL } from '$env/static/public';
 
 	export let data: PageData;
 
@@ -70,8 +71,10 @@
 	async function addUser() {
 		adderror = '';
 		const res_user = await fetch(
-			'https://localhost:8002/user?email=' + addemail.replace('@', '%40'),
-			{ credentials: 'include' }
+			`${PUBLIC_BACKEND_URL}/user?email=` + addemail.replace('@', '%40'),
+			{
+				credentials: 'include'
+			}
 		);
 		if (res_user.status !== 200) {
 			adderror = 'User not found';
@@ -79,7 +82,7 @@
 		}
 		const json_user = await res_user.json();
 
-		const res = await fetch('https://localhost:8002/note_access/', {
+		const res = await fetch(`${PUBLIC_BACKEND_URL}/note_access/`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -98,7 +101,7 @@
 	let useraccess: any[] = [];
 
 	async function getAllUsers() {
-		const res = await fetch('https://localhost:8002/note_access/' + data.id, {
+		const res = await fetch(`${PUBLIC_BACKEND_URL}/note_access/` + data.id, {
 			credentials: 'include'
 		});
 		const json = await res.json();
