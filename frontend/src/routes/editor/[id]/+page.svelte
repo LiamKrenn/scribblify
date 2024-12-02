@@ -5,7 +5,6 @@
 	import { SaveIcon, SlidersHorizontal } from 'lucide-svelte';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
-	import { text } from '@sveltejs/kit';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { Button, buttonVariants } from '$lib/components/ui/button';
 
@@ -15,16 +14,22 @@
 
 	let sendText = (text: string) => {};
 
+	let block = false;
+
 	onMount(() => {
+		// getAllUsers();
+		value = '';
+
 		socket = new WebSocket('wss://localhost:8002/ws/' + data.id);
 
 		socket.onopen = () => {
 			console.log('WebSocket connection opened');
-			socket.send('Hello, WebSocket!');
 		};
 
 		socket.onmessage = (event) => {
 			console.log('WebSocket message received:', event.data);
+			block = true;
+			value = event.data;
 		};
 
 		socket.onclose = () => {
@@ -36,6 +41,7 @@
 		};
 
 		sendText = (text: string) => {
+			block = true;
 			socket.send(text);
 		};
 
@@ -51,7 +57,11 @@
 	let value = '';
 
 	$: if (value) {
-		sendText(value);
+		if (block) {
+			block = false;
+		} else {
+			sendText(value);
+		}
 	}
 
 	let addemail = '';
@@ -94,10 +104,6 @@
 		const json = await res.json();
 		useraccess = json;
 	}
-
-	onMount(() => {
-		getAllUsers();
-	});
 </script>
 
 <form

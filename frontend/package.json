@@ -40,6 +40,7 @@
 		"isomorphic-dompurify": "^2.15.0",
 		"lucide-svelte": "^0.447.0",
 		"tailwind-merge": "^2.5.2",
-		"tailwind-variants": "^0.2.1"
+		"tailwind-variants": "^0.2.1",
+		"vite-plugin-mkcert": "^1.17.6"
 	}
 }
